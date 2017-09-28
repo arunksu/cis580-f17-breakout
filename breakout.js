@@ -2,6 +2,12 @@
 // CIS 580 Fall 2017
 // breakout.js
 
+// The Mozilla web doc on creating a breakout game
+// was used for more complex concepts such as
+// collision detection.
+//
+// https://developer.mozilla.org/en-US/docs/Games/Tutorials/2D_Breakout_game_pure_JavaScript
+
 // Variables.
 var canvas = document.createElement('canvas');
 var ctx = canvas.getContext('2d');
