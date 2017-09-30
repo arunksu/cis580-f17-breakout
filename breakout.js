@@ -4,7 +4,7 @@
 
 // The Mozilla web doc on creating a breakout game
 // was used for more complex concepts such as
-// collision detection.
+// collision detection and brick array creation.
 //
 // https://developer.mozilla.org/en-US/docs/Games/Tutorials/2D_Breakout_game_pure_JavaScript
 
@@ -28,32 +28,71 @@ var playerWidth = 80;
 var playerX = 333; // Close enough to center.
 var playerDirection = 'none'; // Start out stationary.
 
+// Bricks.
+var bricks = [];
+var brickRows = 5;
+var brickCols = 5;
+var brickWidth = 50;
+var brickHeight = 20;
+var brickPadding = 10;
+var brickOffset = 10;
+
 // Create canvas and context.
 function setup()
 {
   canvas.width = 750;
   canvas.height = 500;
   document.body.appendChild(canvas);
+
+  // Create bricks array with x,y variables.
+  for(col = 0; col < brickCols; col++)
+  {
+    bricks[col] = [];
+    for(row = 0; row < brickRows; row++)
+    {
+      bricks[col][row] = { x: 0, y: 0 };
+    }
+  }
 }
 
 // Draw ball (will be used each frame).
 function drawBall()
 {
-    ctx.beginPath();
-    ctx.arc(ballX, ballY, ballRadius, 0, Math.PI*2);
-    ctx.fillStyle = 'black';
-    ctx.fill();
-    ctx.closePath();
+  ctx.beginPath();
+  ctx.arc(ballX, ballY, ballRadius, 0, Math.PI*2);
+  ctx.fillStyle = 'black';
+  ctx.fill();
+  ctx.closePath();
 }
 
 // Draw player (will be used each frame).
 function drawPlayer()
 {
-    ctx.beginPath();
-    ctx.rect(playerX, canvas.height - playerHeight, playerWidth, playerHeight);
-    ctx.fillStyle = "black";
-    ctx.fill();
-    ctx.closePath();
+  ctx.beginPath();
+  ctx.rect(playerX, canvas.height - playerHeight, playerWidth, playerHeight);
+  ctx.fillStyle = "black";
+  ctx.fill();
+  ctx.closePath();
+}
+
+// Draw bricks.
+function drawBricks()
+{
+  for(col = 0; col < brickCols; col++)
+  {
+    for(row = 0; row < brickRows; row++)
+    {
+      var x = (col * (brickWidth + brickPadding)) + brickOffset;
+      var y = (row * (brickHeight + brickPadding)) + brickOffset;
+      bricks[col][row].x = x;
+      bricks[col][row].y = y;
+      ctx.beginPath();
+      ctx.rect(x, y, brickWidth, brickHeight);
+      ctx.fillStyle = 'blue';
+      ctx.fill();
+      ctx.closePath();
+    }
+  }
 }
 
 // Clear old frame and draw new frame.
@@ -61,10 +100,6 @@ function refreshFrame()
 {
   if (!gameOver)
   {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    drawBall();
-    drawPlayer();
-
     // Collision detection with edge of ball and canvas.
     if(ballX + changeX > canvas.width - ballRadius || ballX + changeX < ballRadius) { changeX *= -1; }
 
@@ -89,6 +124,11 @@ function refreshFrame()
     // Also set player direction.
     if(playerDirection === 'right' && playerX < canvas.width - playerWidth) { playerX += 2; }
     else if(playerDirection === 'left' && playerX > 0) { playerX -= 2; }
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    drawBall();
+    drawPlayer();
+    drawBricks();
   }
 }
 
@@ -99,14 +139,14 @@ document.addEventListener("keyup", keyUpHandler, false);
 // Handle key down by changing direction if arrow keys are pressed.
 function keyDownHandler(e)
 {
-    if(e.keyCode === 39) { playerDirection = 'right'; }
-    else if(e.keyCode === 37) { playerDirection = 'left'; }
+  if(e.keyCode === 39) { playerDirection = 'right'; }
+  else if(e.keyCode === 37) { playerDirection = 'left'; }
 }
 
 // If arrow keys are no longer pressed, stop player's motion.
 function keyUpHandler(e)
 {
-    if(e.keyCode === 39 || e.keyCode === 37) { playerDirection = 'none'; }
+  if(e.keyCode === 39 || e.keyCode === 37) { playerDirection = 'none'; }
 }
 
 setup();
