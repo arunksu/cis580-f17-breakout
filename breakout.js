@@ -12,10 +12,13 @@
 var canvas = document.createElement('canvas');
 var ctx = canvas.getContext('2d');
 
+// Game state.
+var gameOver = false;
+
 // Ball.
-var x = 375;
-var y = 450;
-var changeX = 0;
+var ballX = 375;
+var ballY = 450;
+var changeX = 0.65;
 var changeY = -1;
 var ballRadius = 10;
 
@@ -37,7 +40,7 @@ function setup()
 function drawBall()
 {
     ctx.beginPath();
-    ctx.arc(x, y, ballRadius, 0, Math.PI*2);
+    ctx.arc(ballX, ballY, ballRadius, 0, Math.PI*2);
     ctx.fillStyle = 'black';
     ctx.fill();
     ctx.closePath();
@@ -47,7 +50,7 @@ function drawBall()
 function drawPlayer()
 {
     ctx.beginPath();
-    ctx.rect(playerX, canvas.height-playerHeight, playerWidth, playerHeight);
+    ctx.rect(playerX, canvas.height - playerHeight, playerWidth, playerHeight);
     ctx.fillStyle = "black";
     ctx.fill();
     ctx.closePath();
@@ -56,21 +59,37 @@ function drawPlayer()
 // Clear old frame and draw new frame.
 function refreshFrame()
 {
+  if (!gameOver)
+  {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     drawBall();
     drawPlayer();
 
     // Collision detection with edge of ball and canvas.
-    if(x + changeX > canvas.width - ballRadius || x + changeX < ballRadius) { changeX *= -1; }
-    if(y + changeY > canvas.height - ballRadius || y + changeY < ballRadius) { changeY *= -1; }
+    if(ballX + changeX > canvas.width - ballRadius || ballX + changeX < ballRadius) { changeX *= -1; }
 
-    x += changeX;
-    y += changeY;
+    // Check if ball is either still within valid game area
+    // or it has hit the player.
+    if(ballY + changeY < ballRadius ||
+      (ballY + changeY > canvas.height - ballRadius - playerHeight &&
+       ballX >= playerX && ballX <= playerX + playerWidth))
+    {
+      changeY *= -1;
+    }
+    // If ball falls off the edge, game over.
+    else if (ballY + changeY > canvas.height + ballRadius)
+    {
+      gameOver = true;
+    }
+
+    ballX += changeX;
+    ballY += changeY;
 
     // Collision detection with player and edge of canvas.
     // Also set player direction.
     if(playerDirection === 'right' && playerX < canvas.width - playerWidth) { playerX += 2; }
     else if(playerDirection === 'left' && playerX > 0) { playerX -= 2; }
+  }
 }
 
 // Listen for key press events and handle them.
