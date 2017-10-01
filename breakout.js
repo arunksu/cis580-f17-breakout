@@ -14,6 +14,7 @@ var ctx = canvas.getContext('2d');
 
 // Game state.
 var gameOver = false;
+var score = 0;
 
 // Ball.
 var ballX = 375;
@@ -70,7 +71,7 @@ function drawPlayer()
 {
   ctx.beginPath();
   ctx.rect(playerX, canvas.height - playerHeight, playerWidth, playerHeight);
-  ctx.fillStyle = "black";
+  ctx.fillStyle = 'black';
   ctx.fill();
   ctx.closePath();
 }
@@ -109,18 +110,31 @@ function checkBrickCollisions()
       if(b.visible && (ballX > b.x && ballX < b.x + brickWidth && ballY > b.y && ballY < b.y + brickHeight))
       {
         changeY *= -1;
+        score += 10;
         b.visible = false;
+
+        if(score === (brickRows * brickCols) * 10)
+        {
+          gameOver = true;
+          handleWin();
+        }
       }
     }
   }
 }
 
+function showScore()
+{
+
+}
+
 // Clear old frame and draw new frame.
 function refreshFrame()
 {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
   if (!gameOver)
   {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
     drawBall();
     drawPlayer();
     checkBrickCollisions();
@@ -135,12 +149,13 @@ function refreshFrame()
       (ballY + changeY > canvas.height - ballRadius - playerHeight &&
        ballX >= playerX && ballX <= playerX + playerWidth))
     {
-      changeY *= -1;
+      changeY *= -(Math.random() * (1.05 - .98) + .98);
     }
     // If ball falls off the edge, game over.
     else if (ballY + changeY > canvas.height + ballRadius)
     {
       gameOver = true;
+      handleGameLost();
     }
 
     ballX += changeX;
@@ -153,9 +168,19 @@ function refreshFrame()
   }
 }
 
+function handleWin()
+{
+  alert('winner');
+}
+
+function handleGameLost()
+{
+  alert('you lost');
+}
+
 // Listen for key press events and handle them.
-document.addEventListener("keydown", keyDownHandler, false);
-document.addEventListener("keyup", keyUpHandler, false);
+document.addEventListener('keydown', keyDownHandler, false);
+document.addEventListener('keyup', keyUpHandler, false);
 
 // Handle key down by changing direction if arrow keys are pressed.
 function keyDownHandler(e)
