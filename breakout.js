@@ -50,7 +50,7 @@ function setup()
     bricks[col] = [];
     for(row = 0; row < brickRows; row++)
     {
-      bricks[col][row] = { x: 0, y: 0 };
+      bricks[col][row] = { x: 0, y: 0, visible: true};
     }
   }
 }
@@ -82,15 +82,35 @@ function drawBricks()
   {
     for(row = 0; row < brickRows; row++)
     {
-      var x = (col * (brickWidth + brickPadding)) + brickOffset;
-      var y = (row * (brickHeight + brickPadding)) + brickOffset;
-      bricks[col][row].x = x;
-      bricks[col][row].y = y;
-      ctx.beginPath();
-      ctx.rect(x, y, brickWidth, brickHeight);
-      ctx.fillStyle = 'blue';
-      ctx.fill();
-      ctx.closePath();
+      var b = bricks[col][row];
+      if (b.visible)
+      {
+        var x = (col * (brickWidth + brickPadding)) + brickOffset;
+        var y = (row * (brickHeight + brickPadding)) + brickOffset;
+        b.x = x;
+        b.y = y;
+        ctx.beginPath();
+        ctx.rect(x, y, brickWidth, brickHeight);
+        ctx.fillStyle = 'blue';
+        ctx.fill();
+        ctx.closePath();
+      }
+    }
+  }
+}
+
+function checkBrickCollisions()
+{
+  for(col = 0; col < brickCols; col++)
+  {
+    for(row = 0; row < brickRows; row++)
+    {
+      var b = bricks[col][row];
+      if(b.visible && (ballX > b.x && ballX < b.x + brickWidth && ballY > b.y && ballY < b.y + brickHeight))
+      {
+        changeY *= -1;
+        b.visible = false;
+      }
     }
   }
 }
@@ -100,6 +120,12 @@ function refreshFrame()
 {
   if (!gameOver)
   {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    drawBall();
+    drawPlayer();
+    checkBrickCollisions();
+    drawBricks();
+
     // Collision detection with edge of ball and canvas.
     if(ballX + changeX > canvas.width - ballRadius || ballX + changeX < ballRadius) { changeX *= -1; }
 
@@ -124,11 +150,6 @@ function refreshFrame()
     // Also set player direction.
     if(playerDirection === 'right' && playerX < canvas.width - playerWidth) { playerX += 2; }
     else if(playerDirection === 'left' && playerX > 0) { playerX -= 2; }
-
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    drawBall();
-    drawPlayer();
-    drawBricks();
   }
 }
 
