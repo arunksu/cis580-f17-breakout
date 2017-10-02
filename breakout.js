@@ -143,13 +143,19 @@ function refreshFrame()
     // Collision detection with edge of ball and canvas.
     if(ballX + changeX > canvas.width - ballRadius || ballX + changeX < ballRadius) { changeX *= -1; }
 
-    // Check if ball is either still within valid game area
-    // or it has hit the player.
-    if(ballY + changeY < ballRadius ||
-      (ballY + changeY > canvas.height - ballRadius - playerHeight &&
-       ballX >= playerX && ballX <= playerX + playerWidth))
+    // If ball hits player.
+    if (ballY + changeY > canvas.height - ballRadius - playerHeight &&
+        ballX >= playerX && ballX <= playerX + playerWidth)
     {
-      changeY *= -(Math.random() * (1.05 - .98) + .98);
+      // Change direction with random added force if player is moving.
+      if (changeY > 1.5) { changeY = -1 }
+      else if (playerDirection != 'none') { changeY *= -(Math.random() * (1.1 - 0.98) + 0.98); }
+      else { changeY *= -1; }
+    }
+    // Otherwise, if ball hit an edge.
+    if(ballY + changeY < ballRadius)
+    {
+      changeY *= -1;
     }
     // If ball falls off the edge, game over.
     else if (ballY + changeY > canvas.height + ballRadius)
