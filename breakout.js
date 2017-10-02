@@ -33,11 +33,11 @@ var playerDirection = 'none'; // Start out stationary.
 
 // Bricks.
 var bricks = [];
-var brickRows = 5;
-var brickCols = 10;
-var brickWidth = 55;
-var brickHeight = 20;
-var brickPadding = 20;
+var brickRows = 10;
+var brickCols = 16;
+var brickWidth = 26;
+var brickHeight = 15;
+var brickPadding = 21;
 var brickOffset = 10;
 
 // Sound.
@@ -182,7 +182,7 @@ function refreshFrame()
         ballX >= playerX && ballX <= playerX + playerWidth)
     {
       // Change direction with random added force if player is moving.
-      if (changeY > 1.8) { changeY = -1 }
+      if (changeY > 1.5) { changeY = -1 }
       else if (playerDirection != 'none') { changeY *= -(Math.random() * (1.5 - 1.0) + 1.0); }
       else { changeY *= -1; }
     }
