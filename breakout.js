@@ -15,6 +15,8 @@ var ctx = canvas.getContext('2d');
 // Game state.
 var gameOver = false;
 var score = 0;
+var brickValue = 10;
+var winningScore = 0;
 
 // Ball.
 var ballX = 375;
@@ -54,9 +56,25 @@ function setup()
 
     for(row = 0; row < brickRows; row++)
     {
+      // Randomize for brick color.
+      var brickColor = '';
       var r = Math.random();
-      if (r < 0.5) { bricks[col][row] = { x: 0, y: 0, visible: true}; }
-      else { bricks[col][row] = { x: 0, y: 0, visible: false}; }
+
+      if (r < 0.33) { brickColor = '#0081cc'; }
+      else if (r < 0.66) { brickColor = '#ff0066'; }
+      else { brickColor = '#00ad4b'; }
+
+      // Randomize for brick visibility.
+      r = Math.random();
+      if (r < 0.5)
+      {
+        bricks[col][row] = { x: 0, y: 0, color: brickColor, visible: true };
+        winningScore += brickValue;
+      }
+      else
+      {
+        bricks[col][row] = { x: 0, y: 0, color: brickColor, visible: false };
+      }
     }
   }
 }
@@ -97,7 +115,7 @@ function drawBricks()
         b.y = y;
         ctx.beginPath();
         ctx.rect(x, y, brickWidth, brickHeight);
-        ctx.fillStyle = 'blue';
+        ctx.fillStyle = b.color;
         ctx.fill();
         ctx.closePath();
       }
@@ -118,7 +136,7 @@ function checkBrickCollisions()
         score += 10;
         b.visible = false;
 
-        if(score === (brickRows * brickCols) * 10)
+        if(score === winningScore)
         {
           gameOver = true;
           handleWin();
@@ -130,7 +148,9 @@ function checkBrickCollisions()
 
 function showScore()
 {
-
+  ctx.fillStyle = 'black';
+  ctx.font= '20px Arial';
+  ctx.fillText('Score: ' + score, 20, canvas.height - 20);
 }
 
 // Clear old frame and draw new frame.
@@ -144,6 +164,7 @@ function refreshFrame()
     drawPlayer();
     checkBrickCollisions();
     drawBricks();
+    showScore();
 
     // Collision detection with edge of ball and canvas.
     if(ballX + changeX > canvas.width - ballRadius || ballX + changeX < ballRadius) { changeX *= -1; }
@@ -154,7 +175,7 @@ function refreshFrame()
     {
       // Change direction with random added force if player is moving.
       if (changeY > 1.8) { changeY = -1 }
-      else if (playerDirection != 'none') { changeY *= -(Math.random() * (1.2 - 0.98) + 0.98); }
+      else if (playerDirection != 'none') { changeY *= -(Math.random() * (1.5 - 1.0) + 1.0); }
       else { changeY *= -1; }
     }
     // Otherwise, if ball hit an edge.
@@ -181,12 +202,16 @@ function refreshFrame()
 
 function handleWin()
 {
-
+  ctx.fillStyle = 'black';
+  ctx.font= '20px Arial';
+  ctx.fillText('Score: ' + score, 20, canvas.height - 20);
 }
 
 function handleGameLost()
 {
-
+  ctx.fillStyle = 'black';
+  ctx.font= '20px Arial';
+  ctx.fillText('Score: ' + score, 20, canvas.height - 20);
 }
 
 // Listen for key press events and handle them.
