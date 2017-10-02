@@ -13,7 +13,7 @@ var canvas = document.createElement('canvas');
 var ctx = canvas.getContext('2d');
 
 // Game state.
-var gameOver = false;
+var gameState = 'play';
 var score = 0;
 var brickValue = 10;
 var winningScore = 0;
@@ -138,8 +138,7 @@ function checkBrickCollisions()
 
         if(score === winningScore)
         {
-          gameOver = true;
-          handleWin();
+          gameState = 'won';
         }
       }
     }
@@ -158,7 +157,7 @@ function refreshFrame()
 {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  if (!gameOver)
+  if (gameState === 'play')
   {
     drawBall();
     drawPlayer();
@@ -186,8 +185,7 @@ function refreshFrame()
     // If ball falls off the edge, game over.
     else if (ballY + changeY > canvas.height + ballRadius)
     {
-      gameOver = true;
-      handleGameLost();
+      gameState = 'lost';
     }
 
     ballX += changeX;
@@ -198,10 +196,11 @@ function refreshFrame()
     if(playerDirection === 'right' && playerX < canvas.width - playerWidth) { playerX += 2.5; }
     else if(playerDirection === 'left' && playerX > 0) { playerX -= 2.5; }
   }
-  else { handleGameLost(); }
+  else if (gameState === 'lost') { handleGameLost(); }
+  else if (gameState === 'won') { handleGameWon(); }
 }
 
-function handleWin()
+function handleGameWon()
 {
   ctx.fillStyle = 'black';
   ctx.font= '20px Arial';
