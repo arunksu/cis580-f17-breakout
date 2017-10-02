@@ -195,23 +195,24 @@ function refreshFrame()
 
     // Collision detection with player and edge of canvas.
     // Also set player direction.
-    if(playerDirection === 'right' && playerX < canvas.width - playerWidth) { playerX += 2; }
-    else if(playerDirection === 'left' && playerX > 0) { playerX -= 2; }
+    if(playerDirection === 'right' && playerX < canvas.width - playerWidth) { playerX += 2.5; }
+    else if(playerDirection === 'left' && playerX > 0) { playerX -= 2.5; }
   }
+  else { handleGameLost(); }
 }
 
 function handleWin()
 {
   ctx.fillStyle = 'black';
   ctx.font= '20px Arial';
-  ctx.fillText('Score: ' + score, 20, canvas.height - 20);
+  ctx.fillText('You won! Score: ' + score, 20, canvas.height - 20);
 }
 
 function handleGameLost()
 {
   ctx.fillStyle = 'black';
   ctx.font= '20px Arial';
-  ctx.fillText('Score: ' + score, 20, canvas.height - 20);
+  ctx.fillText('Game over. Score: ' + score, 20, canvas.height - 20);
 }
 
 // Listen for key press events and handle them.
