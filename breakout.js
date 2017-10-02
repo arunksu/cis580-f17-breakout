@@ -32,10 +32,10 @@ var playerDirection = 'none'; // Start out stationary.
 // Bricks.
 var bricks = [];
 var brickRows = 5;
-var brickCols = 5;
-var brickWidth = 50;
+var brickCols = 10;
+var brickWidth = 55;
 var brickHeight = 20;
-var brickPadding = 10;
+var brickPadding = 20;
 var brickOffset = 10;
 
 // Create canvas and context.
@@ -46,12 +46,17 @@ function setup()
   document.body.appendChild(canvas);
 
   // Create bricks array with x,y variables.
+  // Randomly turn bricks on and off
+  // for a more varied layout each time.
   for(col = 0; col < brickCols; col++)
   {
     bricks[col] = [];
+
     for(row = 0; row < brickRows; row++)
     {
-      bricks[col][row] = { x: 0, y: 0, visible: true};
+      var r = Math.random();
+      if (r < 0.5) { bricks[col][row] = { x: 0, y: 0, visible: true}; }
+      else { bricks[col][row] = { x: 0, y: 0, visible: false}; }
     }
   }
 }
@@ -148,8 +153,8 @@ function refreshFrame()
         ballX >= playerX && ballX <= playerX + playerWidth)
     {
       // Change direction with random added force if player is moving.
-      if (changeY > 1.5) { changeY = -1 }
-      else if (playerDirection != 'none') { changeY *= -(Math.random() * (1.1 - 0.98) + 0.98); }
+      if (changeY > 1.8) { changeY = -1 }
+      else if (playerDirection != 'none') { changeY *= -(Math.random() * (1.2 - 0.98) + 0.98); }
       else { changeY *= -1; }
     }
     // Otherwise, if ball hit an edge.
@@ -176,12 +181,12 @@ function refreshFrame()
 
 function handleWin()
 {
-  alert('winner');
+
 }
 
 function handleGameLost()
 {
-  alert('you lost');
+
 }
 
 // Listen for key press events and handle them.
