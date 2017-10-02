@@ -40,6 +40,9 @@ var brickHeight = 20;
 var brickPadding = 20;
 var brickOffset = 10;
 
+// Sound.
+var beep = new Audio('beep.mp3');
+
 // Create canvas and context.
 function setup()
 {
@@ -136,6 +139,9 @@ function checkBrickCollisions()
         score += 10;
         b.visible = false;
 
+        // Play sound effect
+        beep.play();
+
         if(score === winningScore)
         {
           gameState = 'won';
@@ -166,8 +172,11 @@ function refreshFrame()
     showScore();
 
     // Collision detection with edge of ball and canvas.
-    if(ballX + changeX > canvas.width - ballRadius || ballX + changeX < ballRadius) { changeX *= -1; }
-
+    if(ballX + changeX > canvas.width - ballRadius || ballX + changeX < ballRadius)
+    {
+      changeX *= -1;
+      beep.play();
+    }
     // If ball hits player.
     if (ballY + changeY > canvas.height - ballRadius - playerHeight &&
         ballX >= playerX && ballX <= playerX + playerWidth)
@@ -181,6 +190,7 @@ function refreshFrame()
     if(ballY + changeY < ballRadius)
     {
       changeY *= -1;
+      beep.play();
     }
     // If ball falls off the edge, game over.
     else if (ballY + changeY > canvas.height + ballRadius)
