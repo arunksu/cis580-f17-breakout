@@ -126,6 +126,8 @@ function drawBricks()
   }
 }
 
+// Check if ball has collided with a brick.
+// If so, add points and set brick visibilty to false.
 function checkBrickCollisions()
 {
   for(col = 0; col < brickCols; col++)
@@ -210,6 +212,7 @@ function refreshFrame()
   else if (gameState === 'won') { handleGameWon(); }
 }
 
+// Change canvas text to show winning message.
 function handleGameWon()
 {
   ctx.fillStyle = 'black';
@@ -217,6 +220,7 @@ function handleGameWon()
   ctx.fillText('You won! Score: ' + score, 20, canvas.height - 20);
 }
 
+// Change canvas text to show losing message.
 function handleGameLost()
 {
   ctx.fillStyle = 'black';
