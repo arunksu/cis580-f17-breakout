@@ -27,7 +27,7 @@ var ballRadius = 10;
 
 // Player.
 var playerHeight = 15;
-var playerWidth = 80;
+var playerWidth = 175;
 var playerX = 333; // Close enough to center.
 var playerDirection = 'none'; // Start out stationary.
 
